@@ -1,5 +1,5 @@
-// API Base URL
-const API_URL = 'http://localhost:5000/api/tasks';
+// API Base URL - use 127.0.0.1 for consistency across environments
+const API_URL = 'http://127.0.0.1:5000/api/tasks';
 
 // DOM Elements
 const taskForm = document.getElementById('task-form');
