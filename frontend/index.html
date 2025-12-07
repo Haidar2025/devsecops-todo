@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - DevSecOps</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Todo App</h1>
+            <p class="subtitle">DevSecOps Fullstack Application</p>
+        </header>
+
+        <!-- Create/Edit Task Form -->
+        <div class="task-form-container">
+            <h2 id="form-title">Skapa ny uppgift</h2>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                
+                <div class="form-group">
+                    <label for="title">Titel *</label>
+                    <input type="text" id="title" required placeholder="T.ex. Slutför DevOps-uppgift">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Beskrivning</label>
+                    <textarea id="description" rows="3" placeholder="Beskriv uppgiften..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status">
+                            <option value="ej påbörjad">Ej påbörjad</option>
+                            <option value="pågående">Pågående</option>
+                            <option value="klar">Klar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priority">Prioritet</label>
+                        <select id="priority">
+                            <option value="låg">Låg</option>
+                            <option value="medel" selected>Medel</option>
+                            <option value="hög">Hög</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dueDate">Deadline</label>
+                        <input type="date" id="dueDate">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submit-btn">Skapa uppgift</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;">Avbryt</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
+        <!-- Success Message -->
+        <div id="success-message" class="success-message" style="display: none;"></div>
+
+        <!-- Tasks List -->
+        <div class="tasks-container">
+            <h2>Mina uppgifter</h2>
+            <div id="tasks-list" class="tasks-list">
+                <p class="loading">Laddar uppgifter...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+{
+  "info": {
+    "name": "Todo API Tests",
+    "description": "API tests for DevSecOps Todo App - Minimum 5 tests for G, 10+ for VG",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Test 1: Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has status field', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('status');",
+              "    pm.expect(jsonData.status).to.eql('healthy');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Test 2: GET All Tasks",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Tasks have required fields', function () {",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.length > 0) {",
+              "        pm.expect(jsonData[0]).to.have.property('id');",
+              "        pm.expect(jsonData[0]).to.have.property('title');",
+              "        pm.expect(jsonData[0]).to.have.property('status');",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks"]
+        }
+      }
+    },
+    {
+      "name": "Test 3: POST Create Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Task is created with correct data', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "    pm.expect(jsonData.title).to.eql('Postman Test Task');",
+              "    pm.expect(jsonData.priority).to.eql('hög');",
+              "    ",
+              "    // Save task ID for later tests",
+              "    pm.environment.set('test_task_id', jsonData.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman Test Task\",\n  \"description\": \"Created via API test\",\n  \"status\": \"pågående\",\n  \"priority\": \"hög\",\n  \"dueDate\": \"2025-12-31\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks"]
+        }
+      }
+    },
+    {
+      "name": "Test 4: POST Invalid Task (Empty Title)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Response contains errors', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('errors');",
+              "    pm.expect(jsonData.errors).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"\",\n  \"description\": \"Invalid task\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks"]
+        }
+      }
+    },
+    {
+      "name": "Test 5: GET Task by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Returns correct task', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "    pm.expect(jsonData).to.have.property('title');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/tasks/{{test_task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks", "{{test_task_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Test 6: GET Non-existent Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('Response contains error message', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('error');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/tasks/99999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks", "99999"]
+        }
+      }
+    },
+    {
+      "name": "Test 7: PUT Update Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Task is updated', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.title).to.eql('Updated Test Task');",
+              "    pm.expect(jsonData.status).to.eql('klar');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Test Task\",\n  \"description\": \"This task was updated\",\n  \"status\": \"klar\",\n  \"priority\": \"medel\",\n  \"dueDate\": \"2025-12-31\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/tasks/{{test_task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks", "{{test_task_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Test 8: PUT Invalid Status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Response contains validation errors', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('errors');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Test Task\",\n  \"status\": \"invalid_status\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/tasks/{{test_task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks", "{{test_task_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Test 9: PUT Non-existent Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Test\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/tasks/99999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks", "99999"]
+        }
+      }
+    },
+    {
+      "name": "Test 10: DELETE Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 204', function () {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/tasks/{{test_task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks", "{{test_task_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Test 11: DELETE Non-existent Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/tasks/99999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "tasks", "99999"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    }
+  ]
+}
