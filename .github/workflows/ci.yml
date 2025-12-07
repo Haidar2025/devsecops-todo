@@ -91,14 +91,32 @@ jobs:
     - name: Install Playwright browsers
       run: npx playwright install --with-deps chromium
     
-    - name: Start Flask API
+    - name: Start Flask API in background
       run: |
         cd backend
-        python app.py &
+        nohup python app.py > api.log 2>&1 &
         sleep 5
+        echo "Checking if API is running..."
+        curl http://localhost:5000/health || exit 1
+    
+    - name: Start Frontend server in background
+      run: |
+        cd frontend
+        nohup python -m http.server 8080 > frontend.log 2>&1 &
+        sleep 3
+        echo "Checking if frontend is running..."
+        curl http://localhost:8080 || exit 1
     
     - name: Run Playwright tests
       run: npx playwright test
+    
+    - name: Show logs on failure
+      if: failure()
+      run: |
+        echo "=== API Logs ==="
+        cat backend/api.log || echo "No API logs"
+        echo "=== Frontend Logs ==="
+        cat frontend/frontend.log || echo "No frontend logs"
     
     - name: Upload test results
       if: always()
