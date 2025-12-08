@@ -1,0 +1,14 @@
+{
+  "name": "devsecops-todo-tests",
+  "version": "1.0.0",
+  "description": "Frontend and API tests for Todo App",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:api": "newman run postman/todo-api-tests.json",
+    "test:all": "npm run test:e2e && npm run test:api"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "newman": "^6.0.0"
+  }
+}
