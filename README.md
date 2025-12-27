@@ -2,6 +2,8 @@
 
 En fullstack Todo-applikation med REST API, omfattande testning och CI/CD pipeline för DevSecOps-kursen.
 
+**Status**: ✅ Verifierad 2025-12-27 - Alla 33 tester passerar lokalt och i CI/CD
+
 ## 🎯 Funktioner
 
 - ✅ Skapa, läsa, uppdatera och ta bort todos (CRUD)
